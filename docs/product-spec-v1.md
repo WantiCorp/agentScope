@@ -1,6 +1,6 @@
 # AgentScope
 
-## Reveal the Authority and Blast Radius of Automation
+## Reveal the Authority and Blast Radius of Automation And AI
 
 AgentScope is a developer tool that helps organizations understand what their automation can actually do.
 
