@@ -1,64 +1,128 @@
 # AgentScope
 
-## Automation has become an execution layer. We can no longer see what it can do.
+AgentScope helps teams understand what their automation can actually do.
 
-AgentScope is a developer tool for understanding automation authority in software systems.
+Modern software delivery relies on automation systems such as GitHub Actions, CI pipelines, infrastructure provisioning workflows, deployment bots, and workflow engines. These systems accumulate permissions across repositories, cloud environments, infrastructure platforms, and deployment tooling.
 
-It analyzes CI/CD pipelines, infrastructure-as-code, and workflow automation to determine what they can actually execute across:
+While permissions are often reviewed individually, the effective authority of automation is rarely visible.
 
-- repositories
-- cloud systems
-- infrastructure platforms
+AgentScope analyzes repository configuration files and reveals:
+
+* Automation identities
+* Automation capabilities
+* Automation authority chains
+* Automation blast radius
 
 ## The Problem
 
-Modern software systems are driven by automation:
+Most teams know what permissions exist.
 
-- GitHub Actions
-- CI/CD pipelines
-- Terraform deployments
-- workflow engines
-- deployment bots
+Few teams understand what automation can actually execute.
 
-Each system is usually reviewed in isolation.
+For example:
 
-But automation does not operate in isolation.
+```text
+github-actions
+  → assume_cloud_role
+      → terraform_apply
+          → infrastructure
+```
 
-Permissions compose.
-Execution paths emerge.
-Authority accumulates.
+The workflow above may appear harmless when reviewed one configuration at a time.
 
-Most teams cannot answer:
+In practice, the combined permissions allow automation to modify production infrastructure.
 
-> What can automation in this repository actually do?
+AgentScope exposes these authority chains and helps teams understand the true impact of automation.
 
-## The Core Insight
+## Core Concept: Automation Authority Chains
 
-Automation is not a set of tools.
+AgentScope models automation authority as:
 
-It is a composed execution identity.
-
-## Automation Authority Chains
-
-AgentScope models automation as:
-
+```text
 identity → capability → system impact
+```
 
-Example:
+Examples:
 
-github-actions → assume_cloud_role → terraform_apply → infrastructure
+```text
+github-actions
+  → repo_write
+  → repository
+```
 
-Another example:
+```text
+github-actions
+  → assume_cloud_role
+  → terraform_apply
+  → infrastructure
+```
 
-github-actions → repo_write → repository
+The collection of authority chains defines the automation blast radius of a repository.
 
-## Blast Radius
+## Example Output
 
-repository / cloud / infrastructure
+```text
+⚠ Infrastructure-Level Automation Authority Detected
 
-## Category
+Primary Authority Chain
+-----------------------
+github-actions
+  → assume_cloud_role
+  → terraform_apply
+  → infrastructure
 
-Automation Authority Visibility
+Blast Radius
+------------
+INFRASTRUCTURE
+
+Findings
+--------
+FND-003 CI assumes AWS role
+FND-004 Workflow runs terraform apply
+FND-010 CI can modify infrastructure
+```
+
+## Scope
+
+AgentScope V1 focuses on static analysis of repository configuration files.
+
+Supported:
+
+* GitHub Actions workflows
+* Terraform configuration detection
+* Capability discovery
+* Authority chain generation
+* Blast radius classification
+* Findings reporting
+
+Out of Scope:
+
+* Runtime monitoring
+* Policy enforcement
+* Cloud API integration
+* SaaS backend
+* Telemetry
+* Web UI
+
+## Vision
+
+AgentScope is the first step toward a broader automation governance platform.
+
+Visibility comes first.
+
+Before organizations can govern automation, they must understand the authority automation already possesses.
+
+## Status
+
+AgentScope is currently an open design and research project.
+
+The repository contains:
+
+* Product specifications
+* Architecture documents
+* Detection models
+* Example reports
+* Roadmap and future direction
 
 ## License
 
