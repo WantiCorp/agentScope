@@ -1,47 +1,53 @@
-🧩 authority-chain-model.md
 # Automation Authority Chain Model
 
-AgentScope is built around one core abstraction:
+AgentScope models automation through authority chains.
 
-> The Automation Authority Chain
+## Traditional Permission Analysis
 
----
+Most tools answer:
 
-## Definition
+> What permissions exist?
 
-An authority chain describes how an automation identity can impact systems.
+Example:
 
+```text
+GitHub Actions
+Permissions:
+- contents: write
+```
 
-identity → capability → system impact
+While useful, permissions alone do not reveal impact.
 
+## Authority Analysis
 
----
+AgentScope asks:
 
-## Example Chains
+> What can automation actually execute?
 
-### Repository-level
+Authority is modeled as:
 
+```text
+identity
+  → capability
+      → impact
+```
 
-github-actions → repo_write → repository
+Example:
 
+```text
+github-actions
+  → repo_write
+  → repository
+```
 
----
+Example:
 
-### Cloud-level
-
-
-github-actions → assume_cloud_role → cloud
-
-
----
-
-### Infrastructure-level
-
-
-github-actions → assume_cloud_role → terraform_apply → infrastructure
-
-
----
+```text
+github-actions
+  → assume_cloud_role
+  → terraform_apply
+  → infrastructure
+```
 
 ## Components
 
@@ -51,101 +57,60 @@ The automation actor.
 
 Examples:
 
-- github-actions
-- CI workflows
-
----
+* GitHub Actions
+* GitLab CI
+* Jenkins
+* Workflow engines
+* AI agents
 
 ### Capability
 
-What the automation can do.
+An action the automation can perform.
 
 Examples:
 
-- repo_write
-- secret_access
-- assume_cloud_role
-- terraform_apply
+* repository write
+* secret access
+* role assumption
+* infrastructure deployment
 
----
+### Impact
 
-### System Impact
+The resulting system affected.
 
-Where the capability applies.
+Examples:
 
-- repository
-- cloud
-- infrastructure
-
----
-
-## Chain Construction
-
-AgentScope builds chains by:
-
-1. detecting identity
-2. extracting capabilities
-3. mapping capabilities → impact
-4. composing multi-step flows
-
----
+* repository
+* cloud resources
+* infrastructure
 
 ## Blast Radius
 
-The blast radius is the highest impact level reachable.
+The collection of authority chains determines blast radius.
 
-Hierarchy:
+Repository blast radius:
 
+```text
+github-actions
+  → repo_write
+  → repository
+```
 
-repository < cloud < infrastructure
+Infrastructure blast radius:
 
+```text
+github-actions
+  → assume_cloud_role
+  → terraform_apply
+  → infrastructure
+```
 
----
+The highest-impact chain determines the effective blast radius of automation.
 
-## Multi-Step Chains
+## Why It Matters
 
-Capabilities can compose:
+Permissions are rarely dangerous in isolation.
 
+Risk emerges when permissions are combined into executable paths.
 
-assume_cloud_role + terraform_apply → infrastructure mutation
-
-
----
-
-## Example Full Set
-
-
-github-actions → repo_write → repository
-github-actions → secret_access → cloud
-github-actions → assume_cloud_role → terraform_apply → infrastructure
-
-
----
-
-## Interpretation
-
-This implies:
-
-- repository modification capability
-- secret access potential
-- infrastructure mutation capability
-
----
-
-## Goal
-
-Make automation authority:
-
-- explicit
-- inspectable
-- deterministic
-- explainable
-
----
-
-## Future Extensions
-
-- multi-identity graphs
-- cross-repository authority mapping
-- probabilistic execution paths
-- runtime validation models
+Authority chains make those paths visible.
