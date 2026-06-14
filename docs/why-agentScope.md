@@ -1,108 +1,61 @@
-# Why AgentScope Exists
+# Why AgentScope
 
-Modern software systems have fundamentally changed.
+Modern software delivery depends on automation.
 
-We no longer deploy software manually.
+GitHub Actions deploy code.
+Terraform provisions infrastructure.
+CI pipelines publish releases.
+Workflow engines trigger operational tasks.
 
-We deploy automation systems that deploy software.
+As organizations adopt more automation, permissions become distributed across multiple systems:
 
----
+* source control
+* cloud environments
+* deployment tooling
+* secrets managers
+* infrastructure platforms
 
-## The Hidden Reality
+Each permission is typically reviewed independently.
 
-Automation is distributed across systems:
+The result is a blind spot.
 
-- CI/CD pipelines
-- cloud IAM roles
-- infrastructure-as-code
-- deployment workflows
-- secret management systems
+Teams know what permissions exist.
 
-Each system is typically reviewed independently.
+They often do not know what automation can actually do.
 
-But real authority emerges from composition.
+For example:
 
----
+```text
+github-actions
+  → assume_cloud_role
+  → terraform_apply
+  → infrastructure
+```
 
-## The Gap
+Viewed separately:
 
-There is no unified way to answer:
+* GitHub Actions is trusted
+* AWS role assumption is trusted
+* Terraform is trusted
 
-> What can automation actually do across all systems?
+Combined, they create an automation identity capable of modifying production infrastructure.
 
-Teams can see:
+Most security and developer tools stop at permissions.
 
-- GitHub permissions
-- Terraform configs
-- CI workflows
+AgentScope focuses on authority.
 
-But not the combined execution authority.
+AgentScope introduces the concept of Automation Authority Chains:
 
----
+```text
+identity → capability → impact
+```
 
-## The Core Insight
+By mapping how automation identities interact with systems, AgentScope reveals:
 
-Automation systems behave like distributed execution identities.
+* effective authority
+* execution paths
+* automation blast radius
 
-But existing security models do not treat them that way.
+Before organizations can govern automation, they must understand it.
 
----
-
-## What Breaks Today
-
-Security assumes:
-
-- permissions are isolated
-- systems are independently safe
-- CI is bounded and deterministic
-
-Reality:
-
-- permissions compose
-- CI becomes a control plane
-- automation becomes a privileged actor
-
----
-
-## AgentScope’s Role
-
-AgentScope does not enforce security.
-
-It makes authority visible.
-
-It answers:
-
-- What automation exists?
-- What can it do?
-- What systems can it impact?
-- How far does its authority extend?
-
----
-
-## Design Philosophy
-
-Visibility precedes control.
-
-You cannot govern what you cannot see.
-
----
-
-## Outcome
-
-AgentScope helps teams:
-
-- understand automation risk
-- identify hidden privilege escalation paths
-- audit CI/CD systems
-- reason about infrastructure impact
-
----
-
-## Vision
-
-A future where automation is treated as a first-class execution system:
-
-- observable
-- analyzable
-- explainable
-- governable
+Visibility comes first.
